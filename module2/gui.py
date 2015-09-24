@@ -63,7 +63,7 @@ class Gui(Tk):
         Y_SCALE = 1
 
         if (10 + (X_OFFSET + x_max) * 15) > (self.winfo_screenwidth() - 10):
-            Y_SCALE = (self.winfo_screenwidth() - 10) / (10 + (X_OFFSET + x_max) * 15)
+            X_SCALE = (self.winfo_screenwidth() - 10) / (10 + (X_OFFSET + x_max) * 15)
         if (10 + (Y_OFFSET + y_max) * 15) > (self.winfo_screenheight() - 100):
             Y_SCALE = (self.winfo_screenheight() - 100) / (10 + (Y_OFFSET + y_max) * 15)
 
