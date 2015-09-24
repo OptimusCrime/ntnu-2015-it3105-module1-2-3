@@ -5,8 +5,7 @@ from Tkinter import *
 class Gui(Tk):
 
     NODE_SIZE = 15
-
-    COLORS = ['red', 'green', 'blue', 'pink', 'orange', 'brown']
+    COLORS = ['#ff8080', '#ffcc80', '#99ff80', '#80ffff', '#9980ff', '#ff80cc', '#e5ff80', '#80b3ff', '#e680ff']
 
     def __init__(self, *args, **kwargs):
         Tk.__init__(self, *args, **kwargs)
