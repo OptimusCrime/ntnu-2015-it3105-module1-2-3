@@ -77,14 +77,14 @@ class Runner:
             Printer.print_border_bottom()
 
             # Get the user input
-            input_choice_k = raw_input('[2-9]: ')
+            input_choice_k = raw_input('[4-9]: ')
             Printer.print_newline()
 
             # Validate input
             try:
                 input_choice_k = int(input_choice_k)
 
-                if input_choice_k < 2 or input_choice_k > 9:
+                if input_choice_k < 4 or input_choice_k > 9:
                     raise AssertionError('')
                 break
             except (AssertionError, ValueError):
@@ -162,5 +162,9 @@ class Runner:
 
         # Start the event mainloop here
         gui.mainloop()
+
+        # Set the terminal to the frontmost process (expects iTerm to be the chosen terminal)
+        if platform.system() == 'Darwin':
+            os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "iTerm" to true' ''')
 
 Runner()
