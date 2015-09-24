@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from common.astar import AStar
+from common.printer import Printer
 
 from module1.gui import Gui
 from module1.node import Node
-from module1.printer import Printer
 
 import os
 import glob
@@ -186,7 +186,6 @@ class Runner:
 
             # Print closing border
             Printer.print_border_bottom()
-
 
 # Start the runner
 Runner()

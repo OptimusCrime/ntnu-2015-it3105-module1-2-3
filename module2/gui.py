@@ -4,7 +4,7 @@ from Tkinter import *
 
 class Gui(Tk):
 
-    NODE_SIZE = 25
+    NODE_SIZE = 15
 
     COLORS = ['red', 'green', 'blue', 'pink', 'orange', 'brown']
 
