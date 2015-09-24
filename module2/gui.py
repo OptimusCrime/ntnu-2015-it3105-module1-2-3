@@ -24,6 +24,10 @@ class Gui(Tk):
         self.bind("<Escape>", lambda x: self.destroy())
         self.bind("q", lambda x: self.destroy())
 
+        # Store all the elements drawn on the canvas
+        self.elements = []
+        self.elements_color = []
+
         # Set canvas to None before starting to draw
         self.canvas = Canvas(self, bg='white')
 
@@ -71,21 +75,23 @@ class Gui(Tk):
         # Return the final calculated posisions
         return left, right, top, bottom
 
+    def get_color(self, node):
+        if len(node.domain) == 1:
+            return Gui.COLORS[node.domain[0]]
+        return '#000000'
+
     def draw_once(self):
-
-
         # Draw the nodes
         for node in self.astar_csp.csp_state.csp.nodes:
-            # Get the posisions
+            # Get the positions
             left, right, top, bottom = self.get_node_pos(node)
 
             # Get color
-            color = '#000000'
-            if len(node.domain) == 1:
-                color = Gui.COLORS[node.domain[0]]
+            color = self.get_color(node)
 
             # Do the actual drawing here
-            self.canvas.create_oval(left, top, right, bottom, fill=color)
+            self.elements.append(self.canvas.create_oval(left, top, right, bottom, fill=color))
+            self.elements_color.append(color)
 
         # Draw the constraints / arcs
         for constraint in self.astar_csp.csp_state.csp.constraints:
@@ -104,11 +110,22 @@ class Gui(Tk):
         # Update
         self.canvas.update()
 
+    def draw(self):
+        # Draw the nodes
+        for element_index in range(len(self.astar_csp.csp_state.csp.nodes)):
+            # Get color
+            color = self.get_color(self.astar_csp.csp_state.csp.nodes[element_index])
+
+            # Check if the new color is different from the old color
+            if color != self.elements_color[element_index]:
+                # Update color
+                self.canvas.itemconfig(self.elements[element_index], fill=color)
+
     def task(self):
         finished = self.astar_csp.run()
 
         # Draw
-        self.draw_once()
+        self.draw()
 
         # Check if we should do some more
         if not finished:
