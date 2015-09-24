@@ -15,7 +15,6 @@ import platform
 
 class Runner:
 
-    K_OPTIONS = ['red', 'green', 'blue', 'pink', 'orange', 'brown']
     K_VALUE = 6
 
     def __init__(self):
