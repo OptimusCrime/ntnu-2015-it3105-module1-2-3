@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from csp import CSP
-
 import copy
+
 
 class CSPState:
 

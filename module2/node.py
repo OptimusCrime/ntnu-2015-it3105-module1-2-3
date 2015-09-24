@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class Node():
 
     def __init__(self, index):
@@ -8,4 +9,4 @@ class Node():
         self.domain = []
 
     def __repr__(self):
-        return 'nodeid = ' + str(self.index)
+        return str(self.index)

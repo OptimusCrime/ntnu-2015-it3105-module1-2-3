@@ -5,7 +5,6 @@ from module1.behaviors.best_first import BestFirst
 from astar import AStar
 from cspstate import CSPState
 
-import copy
 
 class AStarCSP:
 

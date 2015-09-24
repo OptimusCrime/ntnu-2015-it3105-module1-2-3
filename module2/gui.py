@@ -2,6 +2,7 @@
 
 from Tkinter import *
 
+
 class Gui(Tk):
 
     NODE_SIZE = 15
@@ -66,7 +67,6 @@ class Gui(Tk):
         if (10 + (Y_OFFSET + y_max) * 15) > (self.winfo_screenheight() - 100):
             Y_SCALE = (self.winfo_screenheight() - 100) / (10 + (Y_OFFSET + y_max) * 15)
 
-
         left = (10 + (X_OFFSET + node.state[0]) * 15) * X_SCALE
         right = left + Gui.NODE_SIZE
         top = (10 + (Y_OFFSET + node.state[1]) * 15) * Y_SCALE
@@ -75,7 +75,8 @@ class Gui(Tk):
         # Return the final calculated posisions
         return left, right, top, bottom
 
-    def get_color(self, node):
+    @staticmethod
+    def get_color(node):
         if len(node.domain) == 1:
             return Gui.COLORS[node.domain[0]]
         return '#000000'
@@ -87,7 +88,7 @@ class Gui(Tk):
             left, right, top, bottom = self.get_node_pos(node)
 
             # Get color
-            color = self.get_color(node)
+            color = Gui.get_color(node)
 
             # Do the actual drawing here
             self.elements.append(self.canvas.create_oval(left, top, right, bottom, fill=color))
@@ -100,9 +101,9 @@ class Gui(Tk):
             arc_end_left, arc_end_right, arc_end_top, arc_end_bottom = self.get_node_pos(constraint.vars[1])
 
             self.canvas.create_line(arc_start_left + (Gui.NODE_SIZE / 2),
-                                    arc_start_top  + (Gui.NODE_SIZE / 2),
+                                    arc_start_top + (Gui.NODE_SIZE / 2),
                                     arc_end_left + (Gui.NODE_SIZE / 2),
-                                    arc_end_top  + (Gui.NODE_SIZE / 2), fill='#000000')
+                                    arc_end_top + (Gui.NODE_SIZE / 2), fill='#000000')
 
         # Set the label
         self.element_label_var = StringVar()

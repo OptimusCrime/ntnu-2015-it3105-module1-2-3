@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import copy
 
-
-class CSP():
+class CSP:
 
     def __init__(self):
         self.nodes = []
@@ -14,8 +12,6 @@ class CSP():
         for constraint in self.constraints:
             for var in constraint.vars:
                 self.queue.append((var, constraint))
-
-        #self.queue[0][0].domain = [0]
 
     def domain_filtering(self):
         while len(self.queue) > 0:

@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import math
 
-
-class AStar():
+class AStar:
 
     NODE = None
 

@@ -71,7 +71,7 @@ class Gui(Tk):
                     node.dirty = False
 
                     # Get the correct code
-                    fill = self.get_color(node, data)
+                    fill = Gui.get_color(node, data)
 
                     # Draw the rect
                     self.canvas.itemconfig(self.elements[element_index], fill='#' + fill)
@@ -119,7 +119,7 @@ class Gui(Tk):
                 right = node.state[0] * Gui.SQUARE_SIZE + Gui.SQUARE_SIZE - 2 + grid_offset
 
                 # Get the correct code
-                fill = self.get_color(node, data)
+                fill = Gui.get_color(node, data)
 
                 # Draw the rect
                 self.elements.append(self.canvas.create_rectangle(left, top, right, bottom, fill='#' + fill))
@@ -154,7 +154,8 @@ class Gui(Tk):
         else:
             self.draw_path()
 
-    def get_color(self, node, data):
+    @staticmethod
+    def get_color(node, data):
         # Define standard fill
         fill = 'ffffff'
 
@@ -170,12 +171,13 @@ class Gui(Tk):
             if node in data.open:
                 fill = 'cccccc'
             elif node in data.closed:
-                fill = self.calculate_fill_color(data, node.h)
+                fill = Gui.calculate_fill_color(data, node.h)
 
         # Return the final color
         return fill
 
-    def calculate_fill_color(self, data, value):
+    @staticmethod
+    def calculate_fill_color(data, value):
         # Find total cost for start node
         highest_h = data.nodes[0].h
         for node in data.nodes:
