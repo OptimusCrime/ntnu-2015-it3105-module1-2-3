@@ -70,10 +70,13 @@ class Runner:
                 Printer.print_content('Invalid input, try again')
                 Printer.print_border_middle()
 
+        # Get suggested K value for this graph
+        graph_suggested_k = int(graphs[input_choice_graph].split('.')[0].split('-')[-1].replace('k', ''))
+
         # Get the K value
         Printer.print_border_top()
         while True:
-            Printer.print_content('Set K value for this graph')
+            Printer.print_content('Set K value for this graph, suggested value is ' + str(graph_suggested_k))
             Printer.print_border_bottom()
 
             # Get the user input
