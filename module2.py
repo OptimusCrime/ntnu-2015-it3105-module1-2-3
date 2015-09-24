@@ -3,37 +3,103 @@
 from common.astarcsp import AStarCSP
 from common.csp import CSP
 from common.cspstate import CSPState
+from common.printer import Printer
 
 from module2.constraint import Constraint
 from module2.gui import Gui
 from module2.node import Node
 
-import copy
 import os
-import itertools
+import glob
 import platform
 
 class Runner:
 
-    K_VALUE = 6
-
     def __init__(self):
         self.astar_csp = AStarCSP()
 
-        # Build everything
-        self.build()
+        # This method is just used to print the introduction and chose the parser
+        self.start()
 
-        # Begin CSP
-        self.astar_csp.start()
+    def start(self):
+        # Print introduction lines
+        Runner.print_introduction()
 
-        # Start the GUI
-        self.run()
+        # Present different parser options
+        self.parse_files()
 
-    def build(self):
+    @staticmethod
+    def print_introduction():
+        Printer.print_border_top()
+        Printer.print_content('IT3105 :: Module 1 :: GAC + A*')
+        Printer.print_border_middle()
+
+    def parse_files(self):
+        # Set to None to avoid "referenced before assigned" complaint
+        input_choice_graph = None
+        input_choice_k = None
+
+        # Get all boards from directory
+        graphs = glob.glob('module2/graphs/*.txt')
+
+        # Present different graphs to the user
+        while True:
+            Printer.print_content('Available graphs: ')
+            Printer.print_border_middle()
+
+            # Print list of boards
+            idx = 0
+            for b in graphs:
+                Printer.print_content('[' + str(idx) + ']: ' + b, align='left')
+                idx += 1
+            Printer.print_border_bottom()
+
+            # Get the user input
+            input_choice_graph = raw_input('[0-' + str(len(graphs) - 1) + ']: ')
+            Printer.print_newline()
+
+            # Validate input
+            try:
+                input_choice_graph = int(input_choice_graph)
+
+                if input_choice_graph < 0 or input_choice_graph >= len(graphs):
+                    raise AssertionError('')
+                break
+            except (AssertionError, ValueError):
+                Printer.print_border_top()
+                Printer.print_content('Invalid input, try again')
+                Printer.print_border_middle()
+
+        # Get the K value
+        Printer.print_border_top()
+        while True:
+            Printer.print_content('Set K value for this graph')
+            Printer.print_border_bottom()
+
+            # Get the user input
+            input_choice_k = raw_input('[2-8]: ')
+            Printer.print_newline()
+
+            # Validate input
+            try:
+                input_choice_k = int(input_choice_k)
+
+                if input_choice_k < 2 or input_choice_k > 8:
+                    raise AssertionError('')
+                break
+            except (AssertionError, ValueError):
+                Printer.print_border_top()
+                Printer.print_content('Invalid input, try again')
+                Printer.print_border_middle()
+
+        # Parse the file the user chose
+        self.parse_file(str(graphs[input_choice_graph]), input_choice_k)
+
+    def parse_file(self, file_name, k_value):
         csp = CSP()
 
         # Read all lines in the file while stripping the ending newline
-        lines = [line.rstrip('\n') for line in open('module2/graphs/graph-color-5-k6.txt')]
+        lines = [line.rstrip('\n') for line in open(file_name)]
         vertices_and_edges = map(int, lines[0].split(' '))
 
         # Create vertices
@@ -44,7 +110,7 @@ class Runner:
             # Init new Node and set the correct values
             node = Node(i)
             node.state = (state[1], state[2])
-            node.domain = range(Runner.K_VALUE)
+            node.domain = range(k_value)
 
             # Add node to CSP class
             csp.nodes.append(node)
@@ -70,6 +136,12 @@ class Runner:
 
         # Set the csp state to astar_csp
         self.astar_csp.csp_state = csp_state
+
+        # Begin CSP
+        self.astar_csp.start()
+
+        # Run the GUI
+        self.run()
 
     def run(self):
         # Create new instance of GUI

@@ -22,9 +22,9 @@ class Runner:
         AStar.NODE = Node
 
         # This method is just used to print the introduction and chose the parser
-        self.restart()
+        self.start()
 
-    def restart(self):
+    def start(self):
         # Print introduction lines
         Runner.print_introduction()
 
