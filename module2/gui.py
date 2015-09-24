@@ -26,6 +26,7 @@ class Gui(Tk):
         # Store all the elements drawn on the canvas
         self.elements = []
         self.elements_color = []
+        self.element_label_var = None
 
         # Set canvas to None before starting to draw
         self.canvas = Canvas(self, bg='white')
@@ -103,6 +104,14 @@ class Gui(Tk):
                                     arc_end_left + (Gui.NODE_SIZE / 2),
                                     arc_end_top  + (Gui.NODE_SIZE / 2), fill='#000000')
 
+        # Set the label
+        self.element_label_var = StringVar()
+        self.element_label_var.set('0 / ' + str(len(self.astar_csp.csp_state.csp.nodes)))
+
+        # Apply the var to the label
+        text_label = Label(self.canvas, textvariable=self.element_label_var)
+        text_label.place(x=0, y=0)
+
         # Pack
         self.canvas.pack(fill=BOTH, expand=True)
 
@@ -110,15 +119,25 @@ class Gui(Tk):
         self.canvas.update()
 
     def draw(self):
+        # Store number of colored nodes
+        colored_nodes = 0
+
         # Draw the nodes
         for element_index in range(len(self.astar_csp.csp_state.csp.nodes)):
             # Get color
             color = self.get_color(self.astar_csp.csp_state.csp.nodes[element_index])
 
+            # Check if the current node is colored or not
+            if len(self.astar_csp.csp_state.csp.nodes[element_index].domain) == 1:
+                colored_nodes += 1
+
             # Check if the new color is different from the old color
             if color != self.elements_color[element_index]:
                 # Update color
                 self.canvas.itemconfig(self.elements[element_index], fill=color)
+
+        # Update the label
+        self.element_label_var.set(str(colored_nodes) + ' / ' + str(len(self.astar_csp.csp_state.csp.nodes)))
 
     def task(self):
         finished = self.astar_csp.run()
