@@ -149,4 +149,5 @@ class Gui(Tk):
         if not finished:
             self.after(50, self.task)
         else:
-            print 'finished now'
+            self.element_label_var.set(str(len(self.astar_csp.csp_state.csp.nodes)) + ' / ' +
+                                       str(len(self.astar_csp.csp_state.csp.nodes)) + ' - Finished!')
