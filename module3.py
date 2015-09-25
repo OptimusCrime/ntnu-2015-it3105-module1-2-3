@@ -3,6 +3,8 @@
 
 import copy
 
+from module3.node import Node
+
 # Read all lines in the file while stripping the ending newline
 lines = [line.rstrip('\n') for line in open('module3/grams/example.txt')]
 rows_and_columns = map(int, lines[0].split(' '))
@@ -17,9 +19,6 @@ column_specs = []
 for line in lines[rows_and_columns[0] + 2:]:
     column_specs.append(map(int, line.split(' ')))
 
-#print row_specs
-#print column_specs
-
 def row_has_space(size, specs):
     return row_max_expand(size, specs) >= size
 
@@ -27,7 +26,6 @@ def row_max_expand(size, specs):
     used = 0
     for spec in specs:
         used += spec['length'] + spec['space']
-    print size - used
     return size - used
 
 def calcolate_row_specs(size, index, specs):
@@ -72,8 +70,6 @@ def combination_to_representation(size, combinations):
 
 # Trying to calculate rows
 def calculate_rows(size, specs):
-    row = [None] * size
-
     initial_specs = []
     for i in range(len(specs)):
         if i == 0:
@@ -81,29 +77,52 @@ def calculate_rows(size, specs):
         else:
             initial_specs.append({'length': specs[i], 'space': 1})
 
-    print initial_specs
-    print combination_to_representation(size, [initial_specs])
+    #print initial_specs
+    #print combination_to_representation(size, [initial_specs])
 
     specs_combinations = copy.deepcopy([initial_specs])
     for i in range(len(initial_specs)):
-        print 'expand = ' + str(i)
+        #print 'expand = ' + str(i)
         new_row = calcolate_row_specs(size, i, initial_specs)
-        print new_row
+        #print new_row
         if len(new_row) > 0:
             specs_combinations.extend(new_row)
-    print ' '
-    print 'Calculated this: '
+    #print ' '
+    #print 'Calculated this: '
     specs_representation = combination_to_representation(size, specs_combinations)
-    for representation in specs_representation:
-        print representation
-        print ' '
+    #for representation in specs_representation:
+    #    print representation
+    #    print ' '
+    return specs_combinations
+
+for i in range(len(row_specs)):
+    # Get the total row
+    calculated_rows = calculate_rows(rows_and_columns[0], row_specs[i])
+    print calculated_rows
+
+    # Find the number of variables in this row
+    variable_nums = len(calculated_rows[0])
+
+    nodes = []
+    for i in range(variable_nums):
+        nodes.append(set())
 
 
+    # Loop all calculated rows
+    for j in range(len(calculated_rows)):
 
+        #print calculated_rows[j]
+        offset = 0
 
+        # Loop individual start in the current calculated
+        for k in range(len(calculated_rows[j])):
+            #print offset + calculated_rows[j][k]['space']
+            #print '--'
+            nodes[k].add(offset + calculated_rows[j][k]['space'])
 
-row_size = 5
-specs = [2, 1]
+            offset += calculated_rows[j][k]['space'] + calculated_rows[j][k]['length']
 
+    print nodes
+    print ' '
 
-calculate_rows(row_size, specs)
+#
