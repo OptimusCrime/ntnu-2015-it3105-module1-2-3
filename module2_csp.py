@@ -36,7 +36,7 @@ class Runner:
     @staticmethod
     def print_introduction():
         Printer.print_border_top()
-        Printer.print_content('IT3105 :: Module 1 :: GAC + A*')
+        Printer.print_content('IT3105 :: Module 2 :: GAC + A*')
         Printer.print_border_middle()
 
     def parse_files(self):
