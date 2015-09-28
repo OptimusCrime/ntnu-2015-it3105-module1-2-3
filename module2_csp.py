@@ -1,14 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from common.astarcsp import AStarCSP
-from common.csp import CSP
-from common.cspstate import CSPState
+from common.astargac import AStarGAC
+from common.gac import GAC
+from common.gacstate import GACState
 from common.printer import Printer
 
 from module2.constraint import Constraint
 from module2.gui import Gui
-from module2.node import Node
+from module2.variable import Variable
 from module2.makefunc import makefunc
 
 import os
@@ -18,10 +18,7 @@ import platform
 class Runner:
 
     def __init__(self):
-        self.astar_csp = AStarCSP()
-
-        # Set the function for our nodes to run the CV problem
-        Constraint.method = staticmethod(makefunc(['n'], 'n[0] != n[1]'))
+        self.astar_gac = AStarGAC()
 
         # This method is just used to print the introduction and chose the parser
         self.start()
@@ -104,7 +101,7 @@ class Runner:
         self.parse_file(str(graphs[input_choice_graph]), input_choice_k)
 
     def parse_file(self, file_name, k_value):
-        csp = CSP()
+        gac = GAC()
 
         # Read all lines in the file while stripping the ending newline
         lines = [line.rstrip('\n') for line in open(file_name)]
@@ -116,37 +113,40 @@ class Runner:
             state = map(float, lines[i].split(' '))
 
             # Init new Node and set the correct values
-            node = Node(i)
-            node.state = (state[1], state[2])
-            node.domain = range(k_value)
+            variable = Variable(i)
+            variable.state = (state[1], state[2])
+            variable.domain = range(k_value)
 
             # Add node to CSP class
-            csp.nodes.append(node)
+            gac.variables.append(variable)
 
         # Create constraints
         for i in range(vertices_and_edges[0] + 1, len(lines)):
             new_constraint = Constraint()
+
+            # Set the correct constraint
+            new_constraint.method = makefunc(['n'], 'n[0] != n[1]')
 
             # Get the constraint line
             constraint_line = map(int, lines[i].split(' '))
 
             # Loop all vars in the constraint
             for var in constraint_line:
-                new_constraint.vars.append(csp.nodes[var])
+                new_constraint.vars.append(gac.variables[var])
 
             # Apply the new constraint to the list
-            csp.constraints.append(new_constraint)
+            gac.constraints.append(new_constraint)
 
         # Create the initial csp state
-        csp_state = CSPState()
-        csp_state.csp = csp
-        csp_state.type = CSPState.START
+        gac_state = GACState()
+        gac_state.gac = gac
+        gac_state.type = GACState.START
 
-        # Set the csp state to astar_csp
-        self.astar_csp.csp_state = csp_state
+        # Set the csp state to astar_gac
+        self.astar_gac.gac_state = gac_state
 
         # Begin CSP
-        self.astar_csp.start()
+        self.astar_gac.start()
 
         # Run the GUI
         self.run()
@@ -156,7 +156,7 @@ class Runner:
         gui = Gui()
 
         # Set reference to AStarCSP here
-        gui.astar_csp = self.astar_csp
+        gui.astar_gac = self.astar_gac
 
         # Draw the initial drawing
         gui.draw_once()

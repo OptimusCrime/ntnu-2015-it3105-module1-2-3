@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 
-class CSP:
+class GAC:
 
     def __init__(self):
-        self.nodes = []
+        self.variables = []
         self.queue = []
         self.constraints = []
 
@@ -32,41 +32,41 @@ class CSP:
                             if x != j:
                                 self.queue.append((j, constraint))
 
-    def rerun(self, node):
+    def rerun(self, variable):
         # Add to queue
         for constraint in self.constraints:
-            if node in constraint.vars:
+            if variable in constraint.vars:
                 for j in constraint.vars:
-                    if node != j:
+                    if variable != j:
                         self.queue.append((j, constraint))
 
         # Run domain filtering
         self.domain_filtering()
 
     def check_finished(self):
-        for node in self.nodes:
-            if len(node.domain) > 1:
+        for variable in self.variables:
+            if len(variable.domain) > 1:
                 return False
         return True
 
     def check_contradictory_state(self):
-        for node in self.nodes:
-            if len(node.domain) == 0:
+        for variable in self.variables:
+            if len(variable.domain) == 0:
                 return True
         return False
 
-    def revise(self, node, constraint):
+    def revise(self, variable, constraint):
         new_domain = []
-        for domain_node in node.domain:
+        for domain_variable in variable.domain:
             valid_domain = False
-            for constraint_node in constraint.vars:
-                if constraint_node != node:
-                    for d in constraint_node.domain:
-                        if constraint.method([domain_node, d]):
+            for constraint_variable in constraint.vars:
+                if constraint_variable != variable:
+                    for d in constraint_variable.domain:
+                        if constraint.method([domain_variable, d]):
                             valid_domain = True
                             break
 
             if valid_domain:
-                new_domain.append(domain_node)
+                new_domain.append(domain_variable)
 
-        node.domain = new_domain
+        variable.domain = new_domain

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-class Node():
+class Variable():
 
     def __init__(self, index):
         self.index = index

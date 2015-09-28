@@ -11,7 +11,7 @@ class Gui(Tk):
     def __init__(self, *args, **kwargs):
         Tk.__init__(self, *args, **kwargs)
         # Set size
-        self.astar_csp = None
+        self.astar_gac = None
 
         # Force fullscreen
         self.geometry("{0}x{1}+0+0".format(
@@ -33,13 +33,13 @@ class Gui(Tk):
         self.canvas = Canvas(self, bg='white')
 
     def get_node_pos(self, node):
-        x_min = self.astar_csp.csp_state.csp.nodes[0].state[0]
-        x_max = self.astar_csp.csp_state.csp.nodes[0].state[0]
+        x_min = self.astar_gac.gac_state.gac.variables[0].state[0]
+        x_max = self.astar_gac.gac_state.gac.variables[0].state[0]
 
-        y_min = self.astar_csp.csp_state.csp.nodes[0].state[1]
-        y_max = self.astar_csp.csp_state.csp.nodes[0].state[1]
+        y_min = self.astar_gac.gac_state.gac.variables[0].state[1]
+        y_max = self.astar_gac.gac_state.gac.variables[0].state[1]
 
-        for n in self.astar_csp.csp_state.csp.nodes:
+        for n in self.astar_gac.gac_state.gac.variables:
             if n.state[0] > x_max:
                 x_max = n.state[0]
             if n.state[0] < x_min:
@@ -83,7 +83,7 @@ class Gui(Tk):
 
     def draw_once(self):
         # Draw the nodes
-        for node in self.astar_csp.csp_state.csp.nodes:
+        for node in self.astar_gac.gac_state.gac.variables:
             # Get the positions
             left, right, top, bottom = self.get_node_pos(node)
 
@@ -95,7 +95,7 @@ class Gui(Tk):
             self.elements_color.append(color)
 
         # Draw the constraints / arcs
-        for constraint in self.astar_csp.csp_state.csp.constraints:
+        for constraint in self.astar_gac.gac_state.gac.constraints:
             # Get the arc positions
             arc_start_left, arc_start_right, arc_start_top, arc_start_bottom = self.get_node_pos(constraint.vars[0])
             arc_end_left, arc_end_right, arc_end_top, arc_end_bottom = self.get_node_pos(constraint.vars[1])
@@ -107,7 +107,7 @@ class Gui(Tk):
 
         # Set the label
         self.element_label_var = StringVar()
-        self.element_label_var.set('0 / ' + str(len(self.astar_csp.csp_state.csp.nodes)))
+        self.element_label_var.set('0 / ' + str(len(self.astar_gac.gac_state.gac.variables)))
 
         # Apply the var to the label
         text_label = Label(self.canvas, textvariable=self.element_label_var)
@@ -124,12 +124,12 @@ class Gui(Tk):
         colored_nodes = 0
 
         # Draw the nodes
-        for element_index in range(len(self.astar_csp.csp_state.csp.nodes)):
+        for element_index in range(len(self.astar_gac.gac_state.gac.variables)):
             # Get color
-            color = self.get_color(self.astar_csp.csp_state.csp.nodes[element_index])
+            color = self.get_color(self.astar_gac.gac_state.gac.variables[element_index])
 
             # Check if the current node is colored or not
-            if len(self.astar_csp.csp_state.csp.nodes[element_index].domain) == 1:
+            if len(self.astar_gac.gac_state.gac.variables[element_index].domain) == 1:
                 colored_nodes += 1
 
             # Check if the new color is different from the old color
@@ -138,10 +138,10 @@ class Gui(Tk):
                 self.canvas.itemconfig(self.elements[element_index], fill=color)
 
         # Update the label
-        self.element_label_var.set(str(colored_nodes) + ' / ' + str(len(self.astar_csp.csp_state.csp.nodes)))
+        self.element_label_var.set(str(colored_nodes) + ' / ' + str(len(self.astar_gac.gac_state.gac.variables)))
 
     def task(self):
-        finished = self.astar_csp.run()
+        finished = self.astar_gac.run()
 
         # Draw
         self.draw()
@@ -150,5 +150,5 @@ class Gui(Tk):
         if not finished:
             self.after(50, self.task)
         else:
-            self.element_label_var.set(str(len(self.astar_csp.csp_state.csp.nodes)) + ' / ' +
-                                       str(len(self.astar_csp.csp_state.csp.nodes)) + ' - Finished!')
+            self.element_label_var.set(str(len(self.astar_gac.gac_state.gac.variables)) + ' / ' +
+                                       str(len(self.astar_gac.gac_state.gac.variables)) + ' - Finished!')
