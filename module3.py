@@ -3,7 +3,10 @@
 
 import copy
 
+from module2.makefunc import makefunc
 from module3.node import Node
+
+
 
 # Read all lines in the file while stripping the ending newline
 lines = [line.rstrip('\n') for line in open('module3/grams/example.txt')]
@@ -95,17 +98,27 @@ def calculate_rows(size, specs):
     #    print ' '
     return specs_combinations
 
+#
+# Stuff goes here
+#
+
+nodes_real = []
 for i in range(len(row_specs)):
     # Get the total row
     calculated_rows = calculate_rows(rows_and_columns[0], row_specs[i])
     print calculated_rows
+    print '.---------'
+    #print calculated_rows
+    #print '-----'
 
     # Find the number of variables in this row
     variable_nums = len(calculated_rows[0])
 
     nodes = []
-    for i in range(variable_nums):
+    nodes_length = []
+    for x in range(variable_nums):
         nodes.append(set())
+        nodes_length.append(0)
 
 
     # Loop all calculated rows
@@ -116,13 +129,27 @@ for i in range(len(row_specs)):
 
         # Loop individual start in the current calculated
         for k in range(len(calculated_rows[j])):
-            #print offset + calculated_rows[j][k]['space']
-            #print '--'
             nodes[k].add(offset + calculated_rows[j][k]['space'])
-
+            nodes_length[k] = calculated_rows[j][k]['length']
             offset += calculated_rows[j][k]['space'] + calculated_rows[j][k]['length']
+    print
 
-    print nodes
-    print ' '
+    for node_index in range(len(nodes)):
+        node = Node(str(i) + '-' + str(node_index))
+        node.domain = list(nodes[node_index])
+
+        if node_index > 0:
+            node.func = makefunc(['x'], 'x[' + str(node_index) + '] > x[' + str(node_index - 1) + '] + ' + str(nodes_length[node_index]))
+
+        nodes_real.append(node)
+
+
+for node in nodes_real:
+    print node
+    print node.domain
+
+    if getattr(node, 'func', None):
+        print node.func
+    print '----'
 
 #
