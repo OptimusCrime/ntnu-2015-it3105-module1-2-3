@@ -134,9 +134,9 @@ class Runner:
         start_node.h = start_node.calculate_h(self.a_star)
 
         # Start the gui
-        self.start(width, height)
+        self.start_gui(width, height)
 
-    def start(self, width, height):
+    def start_gui(self, width, height):
         # Create new instance of GUI
         gui = Gui()
 
