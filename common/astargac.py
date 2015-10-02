@@ -13,7 +13,7 @@ class AStarGAC:
         self.nodes = []
 
         # Set node type for AStar
-        AStar.NODE = GACState
+        AStar.State = GACState
 
         # Reference to AStar and CSP
         self.astar = AStar()
@@ -28,7 +28,7 @@ class AStarGAC:
         self.gac_state.gac.domain_filtering()
 
         # Assign the current state to AStar and begin to solve
-        self.astar.nodes.append(self.gac_state)
+        self.astar.states.append(self.gac_state)
         self.astar.open.append(self.gac_state)
 
         # Check if we are finished or if the current state is invalid

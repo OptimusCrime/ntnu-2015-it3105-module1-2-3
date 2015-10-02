@@ -15,7 +15,7 @@ import os
 import glob
 import platform
 
-class Runner:
+class Module2VCRunner:
 
     def __init__(self):
         self.astar_gac = AStarGAC()
@@ -25,7 +25,7 @@ class Runner:
 
     def start(self):
         # Print introduction lines
-        Runner.print_introduction()
+        Module2VCRunner.print_introduction()
 
         # Present different parser options
         self.parse_files()
@@ -175,4 +175,4 @@ class Runner:
         if platform.system() == 'Darwin':
             os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "iTerm" to true' ''')
 
-Runner()
+Module2VCRunner()
