@@ -76,6 +76,8 @@ class AStar:
                     # Attach and eval the new successor
                     self.attach_and_eval(successor, current_state)
 
+                    self.open = self.behavior.handle(successor, self.open)
+
         # We are not done yet
         return False
 
