@@ -50,7 +50,7 @@ class AStar:
                     # If state is valid
                     if successor.type is not AStar.State.BLOCKED:
                         # Append the current successor as the child to the parent
-                        current_state.kids.append(successor)
+                        current_state.children.append(successor)
 
                         # Set as dirty (used only for GUI drawing)
                         successor.dirty = True
@@ -62,7 +62,7 @@ class AStar:
 
                             # Use the behavior to modify the open list
                             self.open = self.behavior.handle(successor, self.open)
-                        elif successor.g + successor.arch_cost(current_state) < successor.g:
+                        elif current_state.g + successor.arch_cost(current_state) < successor.g:
                             # Attach relationship between states
                             self.attach_and_eval(successor, current_state)
 
@@ -104,9 +104,9 @@ class AStar:
         # Set h score
         child.h = child.calculate_h(self)
 
-    def get_state(self, id):
+    def get_state(self, state_id):
         for state in self.states:
-            if state.id == id:
+            if state.id == state_id:
                 return state
         return None
 

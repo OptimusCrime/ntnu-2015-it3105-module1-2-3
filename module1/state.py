@@ -27,8 +27,8 @@ class State:
         # The parent states
         self.parents = []
 
-        # The kids states
-        self.kids = []
+        # The children states
+        self.children = []
 
         # Keep track of dirty state (only used for drawing)
         self.dirty = False
