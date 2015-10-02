@@ -73,12 +73,19 @@ class Module2VCRunner:
                 Printer.print_border_middle()
 
         # Get suggested K value for this graph
-        graph_suggested_k = int(graphs[input_choice_graph].split('.')[0].split('-')[-1].replace('k', ''))
+        graph_suggested_k = None
+        graph_suggested_k_temp = graphs[input_choice_graph].split('.')[0].split('-')[-1]
+        if 'k' in graph_suggested_k_temp:
+            graph_suggested_k = int(graph_suggested_k_temp.replace('k', ''))
 
         # Get the K value
         Printer.print_border_top()
         while True:
-            Printer.print_content('Set K value for this graph, suggested value is ' + str(graph_suggested_k))
+            if graph_suggested_k is not None:
+                Printer.print_content('Set K value for this graph, suggested value is ' + str(graph_suggested_k))
+            else:
+                Printer.print_content('Set K value for this graph')
+
             Printer.print_border_bottom()
 
             # Get the user input
