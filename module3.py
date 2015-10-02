@@ -15,6 +15,7 @@ from common.gacstate import GACState
 import os
 import glob
 import platform
+import sys
 
 
 class Module3Runner:
@@ -35,7 +36,7 @@ class Module3Runner:
     @staticmethod
     def print_introduction():
         Printer.print_border_top()
-        Printer.print_content('IT3105 :: Module 3 :: GAC + A* + Nonogram')
+        Printer.print_content('IT3105 :: Module 3 :: GAC + A* + Nonograms')
         Printer.print_border_middle()
 
     def parse_files(self):
@@ -47,7 +48,7 @@ class Module3Runner:
 
         # Present different graphs to the user
         while True:
-            Printer.print_content('Available nonograms: ')
+            Printer.print_content('Available nonograms:')
             Printer.print_border_middle()
 
             # Print list of boards
@@ -79,6 +80,8 @@ class Module3Runner:
     def parse_file(self, file_name):
         # Read all lines in the file while stripping the ending newline
         lines = [line.rstrip('\n') for line in open(file_name)]
+
+        # Get the sizes
         rows_and_columns = map(int, lines[0].split(' '))
 
         # Store board data
@@ -97,7 +100,7 @@ class Module3Runner:
 
         # Add column specs to board data
         column_specs = []
-        for line in lines[rows_and_columns[0] + 2:]:
+        for line in lines[rows_and_columns[1] + 1:]:
             column_specs.append(map(int, line.split(' ')))
 
         board_data.append({
@@ -105,6 +108,10 @@ class Module3Runner:
             'prefix': 'c',
             'length': rows_and_columns[1]
         })
+
+        #print board_data
+
+
 
         # Set references to the Builder class
         Builder.Node = Node
@@ -126,8 +133,16 @@ class Module3Runner:
 
         self.astar_gac.gac_state = gac_state
 
+        #for var in self.astar_gac.gac_state.gac.variables:
+        #    print var
+        #    print var.domain
+
         # Begin CSP
         self.astar_gac.start()
+
+        #for var in self.astar_gac.gac_state.gac.variables:
+        #    print var
+        #    print var.domain
 
         # Run the GUI
         self.run()
@@ -140,7 +155,7 @@ class Module3Runner:
         gui.astar_gac = self.astar_gac
 
         # Draw the initial drawing
-        gui.draw_once()
+        gui.draw_initial()
 
         # If OS X, swap to TKInter window
         if platform.system() == 'Darwin':
@@ -155,9 +170,5 @@ class Module3Runner:
         # Set the terminal to the frontmost process (expects iTerm to be the chosen terminal)
         if platform.system() == 'Darwin':
             os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "iTerm" to true' ''')
-
-
-
-
 
 Module3Runner()

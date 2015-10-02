@@ -45,9 +45,7 @@ class GAC:
         self.domain_filtering()
 
     def check_finished(self):
-        print 'check finished goes here'
         for variable in self.variables:
-            print len(variable.domain)
             if len(variable.domain) > 1:
                 return False
         return True

@@ -8,33 +8,41 @@ import sys
 class GAC2(GAC):
 
     def revise(self, variable, constraint):
-        if variable.index == 'r6' or 1 == 1:
-            new_domain = []
-            print 'test variable = '
-            print variable
-            print variable.domain
-            print ''
+        new_domain = []
 
-            print 'cross index = '
-            cross_index = int(variable.index[1:])
-            print cross_index
-            for domain_variable in variable.domain:
-                valid_domain = False
-                for constraint_variable in constraint.vars:
-                    if constraint_variable != variable and variable.index[0:1] != constraint_variable.index[0:1]:
-                        print constraint_variable
-                        cross_index_back = int(constraint_variable.index[1:])
-                        for d in constraint_variable.domain:
+        #print variable
+        #print variable.domain
 
-                            if constraint.method([domain_variable[cross_index_back], d[cross_index]]):
-                                valid_domain = True
-                                break
-                        print '---'
+        cross_index = int(variable.index[1:])
 
-                if valid_domain:
-                    new_domain.append(domain_variable)
-            print 'new domain = '
-            print new_domain
-            print '------'
+        for domain_variable in variable.domain:
+            valid_domain = False
+            for constraint_variable in constraint.vars:
+                if constraint_variable != variable and variable.index[0:1] != constraint_variable.index[0:1]:
+                    cross_index_back = int(constraint_variable.index[1:])
+                    for d in constraint_variable.domain:
 
-            variable.domain = new_domain
+                        #print 'cross index back = '
+                        #print cross_index_back
+                        #print 'domain_variable = '
+                        #print domain_variable
+                        #print 'cross index = '
+                        #print cross_index
+                        #print 'd = '
+                        #print d
+                        if constraint.method([domain_variable[cross_index_back], d[cross_index]]):
+                            valid_domain = True
+                            break
+
+            if valid_domain:
+                new_domain.append(domain_variable)
+
+        #if  variable.domain != new_domain:
+        #    print '---------------------------------'
+        #    print variable.domain
+        #    print new_domain
+        #print variable.domain
+        ##print 'After = '
+        #print new_domain
+
+        variable.domain = new_domain

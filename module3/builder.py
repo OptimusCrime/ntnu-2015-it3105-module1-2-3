@@ -11,10 +11,10 @@ class Builder:
 
     @staticmethod
     def max_expand(size, specs):
-        used = -size
+        used = 0
         for spec in specs:
             used += spec['length'] + spec['space']
-        return used
+        return size - used
 
     @staticmethod
     def calcolate_row_specs(size, index, specs):
@@ -136,8 +136,8 @@ class Builder:
                 permuations = list(itertools.product(*set_to_list))
                 permuations_real = []
 
-                print 'filtering permutations for = '
-                print permuations
+                #print 'filtering permutations for = '
+                #print permuations
 
                 for perm in permuations:
                     invalid = False
@@ -147,15 +147,15 @@ class Builder:
 
                     if not invalid:
                         permuations_real.append(perm)
-                    else:
-                        print 'invalid permuation = '
-                        print perm
+                    #else:
+                       # print 'invalid permuation = '
+                        #print perm
 
 
                 # fuckyeah
                 fuckyeah = []
-                print direction['specs'][i]
-                print permuations_real
+                #print direction['specs'][i]
+                #print permuations_real
                 for perm in permuations_real:
                     perm_binary = [False] * (direction['length'])
                     #print 'Perm = '
@@ -184,7 +184,7 @@ class Builder:
                 if variable.index[0:1] != var.index[0:1]:
                     constraint.vars.append(var)
             constraint.method = Builder.makefunc(['x'], 'x[0] == x[1]')
-            print constraint.vars
+            #print constraint.vars
             constraints.append(constraint)
 
         return constraints

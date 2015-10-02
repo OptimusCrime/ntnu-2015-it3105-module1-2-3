@@ -33,14 +33,14 @@ class AStarGAC:
 
         # Check if we are finished or if the current state is invalid
         if self.gac_state.gac.check_finished() or self.gac_state.gac.check_contradictory_state():
-            print 'gac state is fucked already in start??!?!'
-            if self.gac_state.gac.check_finished:
-                print 'gac state says finished, wtf'
+            if self.gac_state.gac.check_finished():
                 return True
             return False
-        print 'gac state is all ok'
 
     def run(self):
+        if self.gac_state.gac.check_finished():
+            return True
+
         # Do one step in the agenda loop
         finished = self.astar.agenda_loop()
 
