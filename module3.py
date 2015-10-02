@@ -10,20 +10,40 @@ from module3.node import Node
 from common.astargac import AStarGAC
 from common.gac2 import GAC2
 from common.gacstate import GACState
+import sys
+
+import itertools
 
 # Read all lines in the file while stripping the ending newline
 lines = [line.rstrip('\n') for line in open('module3/grams/example.txt')]
 rows_and_columns = map(int, lines[0].split(' '))
 
 # Get row specs
+
+board_data = []
+
 row_specs = []
 for line in lines[1:rows_and_columns[1] + 1]:
+    print line
     row_specs.append(map(int, line.split(' ')))
+
+board_data.append({
+    'specs': row_specs[::-1],
+    'prefix': 'r',
+    'length': rows_and_columns[0]
+})
 
 # Get column specs
 column_specs = []
 for line in lines[rows_and_columns[0] + 2:]:
     column_specs.append(map(int, line.split(' ')))
+board_data.append({
+    'specs': column_specs,
+    'prefix': 'c',
+    'length': rows_and_columns[1]
+})
+
+
 
 def row_has_space(size, specs):
     return row_max_expand(size, specs) >= size
@@ -105,48 +125,90 @@ def calculate_rows(size, specs):
 # Stuff goes here
 #
 
-print row_specs
-row_specs = row_specs[::-1]
-print row_specs
+real_nodes = []
+real_constraints = []
 
-nodes_real = []
-constraints_real = []
-for i in range(len(row_specs)):
-    # Get the total row
-    calculated_rows = calculate_rows(rows_and_columns[0], row_specs[i])
-    #   print calculated_rows
-    #print '.---------'
-    #print calculated_rows
-    #print '-----'
+for data in board_data:
+    for i in range(len(data['specs'])):
+        # Get the total row
 
-    # Find the number of variables in this row
-    variable_nums = len(calculated_rows[0])
+        calculated_rows = calculate_rows(data['length'], data['specs'][i])
 
-    nodes = []
-    nodes_length = []
-    for x in range(variable_nums):
-        nodes.append(set())
-        nodes_length.append(0)
+        #   print calculated_rows
+        #print '.---------'
+        #print calculated_rows
+        #print '-----'
+
+        # Find the number of variables in this row
+        variable_nums = len(calculated_rows[0])
+
+        nodes = []
+        nodes_length = []
+        for x in range(variable_nums):
+            nodes.append(set())
+            nodes_length.append(0)
 
 
-    # Loop all calculated rows
-    for j in range(len(calculated_rows)):
+        # Loop all calculated rows
+        for j in range(len(calculated_rows)):
 
-        #print calculated_rows[j]
-        offset = 0
+            #print calculated_rows[j]
+            offset = 0
 
-        # Loop individual start in the current calculated
-        for k in range(len(calculated_rows[j])):
-            nodes[k].add(offset + calculated_rows[j][k]['space'])
-            nodes_length[k] = calculated_rows[j][k]['length']
-            offset += calculated_rows[j][k]['space'] + calculated_rows[j][k]['length']
-    print 'row sets'
-    print nodes
-    print '-------------'
-    for node_index in range(len(nodes)):
-        node = Node('r' + str(i) + '-' + str(node_index))
-        node.domain = list(nodes[node_index])
-        node.length = nodes_length[node_index]
+            # Loop individual start in the current calculated
+            for k in range(len(calculated_rows[j])):
+                nodes[k].add(offset + calculated_rows[j][k]['space'])
+                nodes_length[k] = calculated_rows[j][k]['length']
+                offset += calculated_rows[j][k]['space'] + calculated_rows[j][k]['length']
+
+        set_to_list = []
+        for node in nodes:
+            set_to_list.append(list(node))
+
+
+
+        permuations = list(itertools.product(*set_to_list))
+        permuations_real = []
+
+        print 'filtering permutations for = '
+        print permuations
+
+        for perm in permuations:
+            invalid = False
+            for k in range(1, len(perm)):
+                if perm[k - 1] == perm[k] or (perm[k - 1] - 1) == perm[k] or (perm[k - 1] + 1) == perm[k]:
+                    invalid = True
+
+            if not invalid:
+                permuations_real.append(perm)
+            else:
+                print 'invalid permuation = '
+                print perm
+
+
+        # fuckyeah
+        fuckyeah = []
+        print data['specs'][i]
+        print permuations_real
+        for perm in permuations_real:
+            perm_binary = [False] * (data['length'])
+            #print 'Perm = '
+            for perm_index in range(len(perm)):
+                for k in range(data['specs'][i][perm_index]):
+                    perm_binary[perm[perm_index] + k] = True
+
+            fuckyeah.append(perm_binary)
+
+        real_node = Node(str(data['prefix']) + str(i))
+        real_node.domain = copy.deepcopy(fuckyeah)
+
+        real_nodes.append(real_node)
+
+    #for node_index in range(len(nodes)):
+    #    node = Node('r' + str(i) + '-' + str(node_index))
+    #    node.domain = list(nodes[node_index])
+    #
+    '''#     node.length = nodes_length[node_index]
 
         constraint = Constraint()
 
@@ -162,6 +224,28 @@ for i in range(len(row_specs)):
             constraints_real.append(constraint)
 
         nodes_real.append(node)
+    '''
+
+# Create all constraints
+for variable in real_nodes:
+    constraint = Constraint()
+    constraint.vars = [variable]
+    for var in real_nodes:
+        if variable.index[0:1] != var.index[0:1]:
+            constraint.vars.append(var)
+    constraint.method = makefunc(['x'], 'x[0] == x[1]')
+    print constraint.vars
+    real_constraints.append(constraint)
+
+print '------------------------------------------'
+print 'yey'
+print 'hello world'
+for node in real_nodes:
+    print node
+    print node.domain
+    print '------'
+
+'''
 for i in range(len(column_specs)):
     # Get the total row
     calculated_rows = calculate_rows(rows_and_columns[1], column_specs[i])
@@ -208,16 +292,6 @@ for i in range(len(column_specs)):
         nodes_real.append(node)
 
 
-for node in nodes_real:
-    print node
-    print node.domain
-
-
-print 'constraints: '
-for constraint in constraints_real:
-    print constraint.vars
-print '----'
-
 def print_state(astar_gac):
     global rows_and_columns
     print_nodes = []
@@ -239,10 +313,12 @@ def print_state(astar_gac):
     for line in (print_nodes):
         print line
 
+'''
+
 # Gac stuff
 gac = GAC2()
-gac.variables = nodes_real
-gac.constraints = constraints_real
+gac.variables = real_nodes
+gac.constraints = real_constraints
 
 gac_state = GACState()
 gac_state.gac = gac
@@ -253,8 +329,12 @@ astar_gac.gac_state = gac_state
 astar_gac.start()
 
 num = 0
-astar_gac.run()
-print_state(astar_gac)
+
+for var in astar_gac.gac_state.gac.variables:
+    print var
+    print var.domain
+
+#print_state(astar_gac)
 #astar_gac.run()
 #print_state(astar_gac)
 #astar_gac.run()
