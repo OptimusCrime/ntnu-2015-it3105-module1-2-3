@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from node import Node
+from state import State
 
 from behaviors.best_first import BestFirst
 from behaviors.breadth_first import BreadthFirst
@@ -64,14 +64,14 @@ class Gui(Tk):
         # Loop the grids
         for idx, data in enumerate(self.data):
             # Loop the grid for this solver
-            for node in data.nodes:
+            for state in data.states:
                 # Only update dirty nodes
-                if node.dirty:
+                if state.dirty:
                     # Reset the dirty bit
-                    node.dirty = False
+                    state.dirty = False
 
                     # Get the correct code
-                    fill = Gui.get_color(node, data)
+                    fill = Gui.get_color(state, data)
 
                     # Draw the rect
                     self.canvas.itemconfig(self.elements[element_index], fill='#' + fill)
@@ -88,12 +88,12 @@ class Gui(Tk):
             grid_offset = (idx * self.width * Gui.SQUARE_SIZE) + (idx * 10) + 10
 
             # Loop nodes in the goal path
-            for node in goal_path:
+            for state in goal_path:
                 # Generate the positions
-                top = (self.height - node.state[1] - 1) * Gui.SQUARE_SIZE + 10
-                left = node.state[0] * Gui.SQUARE_SIZE + grid_offset
-                bottom = (self.height - node.state[1] - 1) * Gui.SQUARE_SIZE + Gui.SQUARE_SIZE - 2 + 10
-                right = node.state[0] * Gui.SQUARE_SIZE + Gui.SQUARE_SIZE - 2 + grid_offset
+                top = (self.height - state.id[1] - 1) * Gui.SQUARE_SIZE + 10
+                left = state.id[0] * Gui.SQUARE_SIZE + grid_offset
+                bottom = (self.height - state.id[1] - 1) * Gui.SQUARE_SIZE + Gui.SQUARE_SIZE - 2 + 10
+                right = state.id[0] * Gui.SQUARE_SIZE + Gui.SQUARE_SIZE - 2 + grid_offset
 
                 # Draw the oval
                 self.canvas.create_oval(left, top, right, bottom, fill="#0000ff")
@@ -111,15 +111,15 @@ class Gui(Tk):
             grid_offset = (idx * self.width * Gui.SQUARE_SIZE) + (idx * 10) + 10
 
             # Loop the grid for this solver
-            for node in data.nodes:
+            for state in data.states:
                 # Define the various coordinates
-                top = (self.height - node.state[1] - 1) * Gui.SQUARE_SIZE + 10
-                left = node.state[0] * Gui.SQUARE_SIZE + grid_offset
-                bottom = (self.height - node.state[1] - 1) * Gui.SQUARE_SIZE + Gui.SQUARE_SIZE - 2 + 10
-                right = node.state[0] * Gui.SQUARE_SIZE + Gui.SQUARE_SIZE - 2 + grid_offset
+                top = (self.height - state.id[1] - 1) * Gui.SQUARE_SIZE + 10
+                left = state.id[0] * Gui.SQUARE_SIZE + grid_offset
+                bottom = (self.height - state.id[1] - 1) * Gui.SQUARE_SIZE + Gui.SQUARE_SIZE - 2 + 10
+                right = state.id[0] * Gui.SQUARE_SIZE + Gui.SQUARE_SIZE - 2 + grid_offset
 
                 # Get the correct code
-                fill = Gui.get_color(node, data)
+                fill = Gui.get_color(state, data)
 
                 # Draw the rect
                 self.elements.append(self.canvas.create_rectangle(left, top, right, bottom, fill='#' + fill))
@@ -160,11 +160,11 @@ class Gui(Tk):
         fill = 'ffffff'
 
         # Check if the node is blocked or not
-        if node.type == Node.BLOCKED:
+        if node.type == State.BLOCKED:
             fill = '000000'
-        elif node.type == Node.START:
+        elif node.type == State.START:
             fill = '0000ff'
-        elif node.type == Node.GOAL:
+        elif node.type == State.GOAL:
             fill = '0000ff'
         else:
             # Check in open
@@ -179,10 +179,10 @@ class Gui(Tk):
     @staticmethod
     def calculate_fill_color(data, value):
         # Find total cost for start node
-        highest_h = data.nodes[0].h
-        for node in data.nodes:
-            if node.h > highest_h:
-                highest_h = node.h
+        highest_h = data.states[0].h
+        for state in data.states:
+            if state.h > highest_h:
+                highest_h = state.h
 
         # Calculate the RBG colors to generate a heat map from red to green
         r = math.fabs(int((255 * value) / highest_h))

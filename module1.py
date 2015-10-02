@@ -5,28 +5,28 @@ from common.astar import AStar
 from common.printer import Printer
 
 from module1.gui import Gui
-from module1.node import Node
+from module1.state import State
 
 import os
 import glob
 import platform
 
 
-class Runner:
+class Module1Runner:
 
     def __init__(self):
         # New instance of the A* Algorithm
         self.a_star = AStar()
 
-        # Set reference in AStar to Node
-        AStar.NODE = Node
+        # Set reference in AStar to State
+        AStar.State = State
 
         # This method is just used to print the introduction and chose the parser
         self.start()
 
     def start(self):
         # Print introduction lines
-        Runner.print_introduction()
+        Module1Runner.print_introduction()
 
         # Present different parser options
         self.parse_files()
@@ -86,21 +86,21 @@ class Runner:
         lines = [line.rstrip('\n') for line in open(file_name)]
 
         # Build the grid
-        grid_size = Runner.parse_file_line(lines[0])
+        grid_size = Module1Runner.parse_file_line(lines[0])
 
         # Find start and goal from the file
         start_and_goal = lines[1].replace(' ', '').split(')(')
 
         # Get start position
-        start_node_position = Runner.parse_file_line(start_and_goal[0])
-        goal_node_position = Runner.parse_file_line(start_and_goal[1])
+        start_node_position = Module1Runner.parse_file_line(start_and_goal[0])
+        goal_node_position = Module1Runner.parse_file_line(start_and_goal[1])
 
         # List for barriers
         barriers = []
 
         # Add barriers (if any)
         for idx in range(2, len(lines)):
-            barriers.append(Runner.parse_file_line(lines[idx]))
+            barriers.append(Module1Runner.parse_file_line(lines[idx]))
 
         # Create the board
         self.create_board(grid_size[0], grid_size[1], (start_node_position[0], start_node_position[1]),
@@ -110,24 +110,24 @@ class Runner:
         # Loop the height
         for y in range(0, height):
             for x in range(0, width):
-                self.a_star.nodes.append(Node((x, y)))
+                self.a_star.states.append(State((x, y)))
 
         # Loop barriers and set type to blocked on all involved nodes
         for bar in barriers:
             for x in range(bar[0], (bar[0] + bar[2])):
                 for y in range(bar[1], (bar[1] + bar[3])):
-                    self.a_star.get_node((x, y)).type = Node.BLOCKED
+                    self.a_star.get_state((x, y)).type = State.BLOCKED
 
         # Set the start node
-        start_node = self.a_star.get_node((start[0], start[1]))
-        start_node.type = Node.START
+        start_node = self.a_star.get_state((start[0], start[1]))
+        start_node.type = State.START
 
         # Add start node to the open list
         self.a_star.open.append(start_node)
 
         # Set goal node
-        goal_node = self.a_star.get_node((goal[0], goal[1]))
-        goal_node.type = Node.GOAL
+        goal_node = self.a_star.get_state((goal[0], goal[1]))
+        goal_node.type = State.GOAL
 
         # Set information about the start node
         start_node.g = 0
@@ -180,7 +180,7 @@ class Runner:
                 Printer.print_empty()
 
                 # Print the stats
-                Printer.print_content('Nodes generated: ' + str(len(data.closed) + len(data.open)), align='left')
+                Printer.print_content('States generated: ' + str(len(data.closed) + len(data.open)), align='left')
                 Printer.print_content('Solution path length: ' + str(sum(map(lambda x: x.g, data.goal_path()))),
                                       align='left')
 
@@ -188,4 +188,4 @@ class Runner:
             Printer.print_border_bottom()
 
 # Start the runner
-Runner()
+Module1Runner()
