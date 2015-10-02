@@ -7,3 +7,4 @@ class Constraint():
 
     def __init__(self):
         self.vars = []
+        self.method_raw = None

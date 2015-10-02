@@ -24,6 +24,7 @@ class GACState:
         return 100
 
     def generate_all_successors(self, astar):
+        print 'Running generate all sucessors'
         states = []
 
         # Find the node with smallest domain that is not 0
@@ -38,7 +39,6 @@ class GACState:
 
         if smallest_domain_variable_index is None:
             return []
-
         for domain in self.gac.variables[smallest_domain_variable_index].domain:
             # Deep copy self
             new_gac = copy.deepcopy(self.gac)
@@ -67,6 +67,9 @@ class GACState:
 
                 # Append the new state
                 states.append(gac_state)
+            else:
+                print 'fucked sucessor'
+        print "Genererte totalt" + str(len(states))
 
         # Return the actual states
         return states
