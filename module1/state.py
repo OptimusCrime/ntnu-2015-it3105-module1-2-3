@@ -95,7 +95,6 @@ class State:
 
     @staticmethod
     def hash(key):
-
         return str(key[0]) + '-' + str(key[1])
 
     def __lt__(self, compare):
