@@ -32,6 +32,9 @@ class Gui(Tk):
         # Set canvas to None before starting to draw
         self.canvas = Canvas(self, bg='white')
 
+    def get_node_idx_pos(self, idx):
+        return self.get_node_pos(self.astar_gac.gac_state.gac.variables[idx])
+
     def get_node_pos(self, node):
         x_min = self.astar_gac.gac_state.gac.variables[0].state[0]
         x_max = self.astar_gac.gac_state.gac.variables[0].state[0]
@@ -97,8 +100,8 @@ class Gui(Tk):
         # Draw the constraints / arcs
         for constraint in self.astar_gac.gac_state.gac.constraints:
             # Get the arc positions
-            arc_start_left, arc_start_right, arc_start_top, arc_start_bottom = self.get_node_pos(constraint.vars[0])
-            arc_end_left, arc_end_right, arc_end_top, arc_end_bottom = self.get_node_pos(constraint.vars[1])
+            arc_start_left, arc_start_right, arc_start_top, arc_start_bottom = self.get_node_idx_pos(constraint.vars[0])
+            arc_end_left, arc_end_right, arc_end_top, arc_end_bottom = self.get_node_idx_pos(constraint.vars[1])
 
             self.canvas.create_line(arc_start_left + (Gui.NODE_SIZE / 2),
                                     arc_start_top + (Gui.NODE_SIZE / 2),

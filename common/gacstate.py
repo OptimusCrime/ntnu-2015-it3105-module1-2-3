@@ -46,7 +46,7 @@ class GACState:
             new_gac.variables[smallest_domain_variable_index].domain = [domain]
 
             # Valid state, run rerun on the node we just updated
-            new_gac.rerun(new_gac.variables[smallest_domain_variable_index])
+            new_gac.rerun(smallest_domain_variable_index)
 
             # Double check that this state is in fact not invalid
             if not new_gac.check_contradictory_state():
@@ -80,7 +80,7 @@ class GACState:
             sum += len(variable.domain) - 1
 
         return sum
-    
+
     def get_hash(self):
         return hash(self.gac)
 

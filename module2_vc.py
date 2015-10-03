@@ -139,7 +139,7 @@ class Module2VCRunner:
 
             # Loop all vars in the constraint
             for var in constraint_line:
-                new_constraint.vars.append(gac.variables[var])
+                new_constraint.vars.append(var)
 
             # Apply the new constraint to the list
             gac.constraints.append(new_constraint)

@@ -20,13 +20,13 @@ class GAC:
             (x, C) = self.queue.pop(0)
 
             # Store the old domain here
-            old_domain = len(x.domain)
+            old_domain = len(self.variables[x].domain)
 
             # Run revise
             self.revise(x, C)
 
             # Check if domain was reduced
-            if old_domain != len(x.domain):
+            if old_domain != len(self.variables[x].domain):
                 for constraint in self.constraints:
                     if x in constraint.vars and constraint != C:
                         for j in constraint.vars:
@@ -56,13 +56,13 @@ class GAC:
                 return True
         return False
 
-    def revise(self, variable, constraint):
+    def revise(self, idx, constraint):
         new_domain = []
-        for domain_variable in variable.domain:
+        for domain_variable in self.variables[idx].domain:
             valid_domain = False
             for constraint_variable in constraint.vars:
-                if constraint_variable != variable:
-                    for d in constraint_variable.domain:
+                if constraint_variable != idx:
+                    for d in self.variables[constraint_variable].domain:
                         if constraint.method([domain_variable, d]):
                             valid_domain = True
                             break
@@ -70,4 +70,4 @@ class GAC:
             if valid_domain:
                 new_domain.append(domain_variable)
 
-        variable.domain = new_domain
+        self.variables[idx].domain = new_domain
