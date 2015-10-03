@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from gac import GAC
-
 import copy
 
 
 class GACState:
+
+    GAC = None
 
     START = 'S'
     GOAL = 'g'
@@ -44,7 +44,7 @@ class GACState:
             return []
         for domain in self.gac.variables[smallest_domain_variable_index].domain:
             # New gac state
-            new_gac = GAC()
+            new_gac = GACState.GAC()
 
             # Copy the variable list
             new_gac.variables = copy.deepcopy(self.gac.variables)

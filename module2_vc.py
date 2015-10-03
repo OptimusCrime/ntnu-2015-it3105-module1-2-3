@@ -5,11 +5,11 @@ from common.astargac import AStarGAC
 from common.gac import GAC
 from common.gacstate import GACState
 from common.printer import Printer
+from common.makefunc import makefunc
 
 from module2.constraint import Constraint
 from module2.gui import Gui
 from module2.variable import Variable
-from module2.makefunc import makefunc
 
 import os
 import glob
@@ -144,6 +144,9 @@ class Module2VCRunner:
             # Apply the new constraint to the list
             GAC.Constraints.append(new_constraint)
 
+        # Set the correct gac for GACState
+        GACState.GAC = GAC
+
         # Create the initial csp state
         gac_state = GACState()
         gac_state.gac = gac
@@ -154,11 +157,6 @@ class Module2VCRunner:
 
         # Begin CSP
         self.astar_gac.start()
-
-        #while True:
-        #    if self.astar_gac.run():
-        #        break
-        #print 'finished'
 
         # Run the GUI
         self.run()

@@ -5,7 +5,7 @@ from Tkinter import *
 
 class Gui(Tk):
 
-    SQUARE_SIZE = 50
+    SQUARE_SIZE = 40
 
     def __init__(self, *args, **kwargs):
         Tk.__init__(self, *args, **kwargs)
@@ -51,7 +51,7 @@ class Gui(Tk):
                             # Check what color to draw
                             fill = 'ffffff'
                             if variable.domain[0][j]:
-                                fill = 'cccccc'
+                                fill = 'ffcc80'
 
                             # Update the stored color
                             self.elements_color[i][j] = variable.domain[0][j]
@@ -70,7 +70,7 @@ class Gui(Tk):
             # Check if we are drawing a row or column
             if variable.index[0:1] == 'r':
                 inner_elements = []
-                print variable.domain
+
                 inner_elements_color = [False] * len(variable.domain[0])
                 for j in range(len(variable.domain[0])):
                     top = i * Gui.SQUARE_SIZE + 10

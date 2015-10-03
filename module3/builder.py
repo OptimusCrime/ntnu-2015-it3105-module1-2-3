@@ -1,190 +1,157 @@
 # -*- coding: utf-8 -*-
 
+from constraint import Constraint
+from variable import Variable
+
 import copy
 import itertools
 
+
 class Builder:
 
-    Node = None
-    Constraint = None
     makefunc = None
 
-    @staticmethod
-    def max_expand(size, specs):
-        used = 0
-        for spec in specs:
-            used += spec['length'] + spec['space']
-        return size - used
+    def __init__(self):
+        pass
 
     @staticmethod
-    def calcolate_row_specs(size, index, specs):
-        # Copy the specs
-        new_specs = copy.deepcopy(specs)
-
-        # Keep track of all initial combinations
-        combination = []
-
-        for i in range(Builder.max_expand(size, new_specs)):
-            # Get a copy of the specs
-            new_specs = copy.deepcopy(new_specs)
-
-            # Increase the space with one
-            new_specs[index]['space'] += 1
-
-            # Add to list
-            combination.append(new_specs)
-
-            # Reccurssive call on all other specs
-            for j in range(len(specs)):
-                if j != index:
-                    reccurrsive_row_specs = Builder.calcolate_row_specs(size, j, new_specs)
-                    if len(reccurrsive_row_specs) > 0:
-                        combination.extend(reccurrsive_row_specs)
-
-        return combination
-
-    @staticmethod
-    def combination_to_representation(size, combinations):
-        representation = []
-
-        for combination in combinations:
-            new_line = [0] * size
-            current_index = 0
-            for spec in combination:
-                current_index += spec['space']
-                for j in range( spec['length']):
-                    new_line[current_index] = 1
-                    current_index += 1
-            representation.append(new_line)
-        return representation
-
-
-    @staticmethod
-    def calculate_rows(size, specs):
+    def initial_specs(specs):
         initial_specs = []
+
+        # Loop the specs and set the space to one initially
         for i in range(len(specs)):
             if i == 0:
-                initial_specs.append({'length': specs[i], 'space': 0})
+                initial_specs.append([specs[i], 0])
             else:
-                initial_specs.append({'length': specs[i], 'space': 1})
+                initial_specs.append([specs[i], 1])
 
-        #print initial_specs
-        #print combination_to_representation(size, [initial_specs])
-
-        specs_combinations = copy.deepcopy([initial_specs])
-        for i in range(len(initial_specs)):
-            #print 'expand = ' + str(i)
-            new_row = Builder.calcolate_row_specs(size, i, initial_specs)
-            #print new_row
-            if len(new_row) > 0:
-                specs_combinations.extend(new_row)
-        #print ' '
-        #print 'Calculated this: '
-        specs_representation = Builder.combination_to_representation(size, specs_combinations)
-        #for representation in specs_representation:
-        #    print representation
-        #    print ' '
-        return specs_combinations
-
-    #
-    # Stuff goes here
-    #
+        # Return the initial specs
+        return initial_specs
 
     @staticmethod
-    def build_domains(data):
-        real_nodes = []
+    def specs_combinations(specs, length):
+        # Find out how much remaning space we have left
+        remaining = length
+        for spec in specs:
+            remaining -= spec[0] + spec[1]
 
+        # Check if remaining space is 0
+        if remaining == 0:
+            return [specs]
+        else:
+            # Calculate the different combinations
+            combinations = []
+            for i in range(len(specs)):
+                for j in range(remaining + 1):
+                    new_specs = copy.deepcopy(specs)
+                    new_specs[i][1] += j
+                    combinations.append(new_specs)
+
+        # Return the combinations
+        return combinations
+
+    @staticmethod
+    def create_permutations(combinations, length, block_length):
+        # Get all the different values from the combinations
+        permutation_options = [[] for int in range(len(combinations[0]))]
+        for i in range(len(combinations)):
+            for j in range(len(combinations[0])):
+                # Add the option
+                permutation_options[j].append(combinations[i][j][1])
+
+        # Make the permutations unique
+        permutation_options_unique = []
+        for i in range(len(permutation_options)):
+            permutation_options_unique.append(list(set(permutation_options[i])))
+
+        # Use the itertools to create the real permutations
+        permutations = list(itertools.product(*permutation_options_unique))
+
+        # Filter out permutations that are too long
+        valid_permutations = []
+        for permutation in permutations:
+            if (sum(permutation) + block_length) <= length:
+                valid_permutations.append(permutation)
+
+        return valid_permutations
+
+    @staticmethod
+    def permutation_to_domain(blocks, length, permutations):
+        domains = []
+
+        # Loop the permutations
+        for i in range(len(permutations)):
+            # Create empty domain
+            domain = [False for bool in range(length)]
+            offset = 0
+
+            # Loop over each permutation value
+            for j in range(len(permutations[i])):
+
+                # Increase the offset
+                offset += permutations[i][j]
+
+                # Handle the length of the block
+                for k in range(blocks[j]):
+                    domain[offset] = True
+                    offset += 1
+
+            # Add domain to domains
+            domains.append(domain)
+
+        # Return the calculated domains
+        return domains
+
+    @staticmethod
+    def build_variables(data):
+        variables = []
+
+        index = 0
         for direction in data:
             for i in range(len(direction['specs'])):
-                # Get the total row
+                # New instance of variable
+                variable = Variable(str(direction['prefix']) + str(i))
 
-                calculated_rows = Builder.calculate_rows(direction['length'], direction['specs'][i])
+                # Get length of block values
+                block_length = sum(direction['specs'][i])
 
-                #   print calculated_rows
-                #print '.---------'
-                #print calculated_rows
-                #print '-----'
+                # Stuff we need to do to find the different permutations for this block
+                initial_specs = Builder.initial_specs(direction['specs'][i])
+                combinations = Builder.specs_combinations(initial_specs, direction['length'])
+                permutations = Builder.create_permutations(combinations, direction['length'], block_length)
 
-                # Find the number of variables in this row
-                variable_nums = len(calculated_rows[0])
+                # Set the final domain
+                variable.domain = Builder.permutation_to_domain(direction['specs'][i], direction['length'],
+                                                                permutations)
 
-                nodes = []
-                nodes_length = []
-                for x in range(variable_nums):
-                    nodes.append(set())
-                    nodes_length.append(0)
+                # Add variable to list
+                variables.append(variable)
 
+                # Increase index value
+                index += 1
 
-                # Loop all calculated rows
-                for j in range(len(calculated_rows)):
-
-                    #print calculated_rows[j]
-                    offset = 0
-
-                    # Loop individual start in the current calculated
-                    for k in range(len(calculated_rows[j])):
-                        nodes[k].add(offset + calculated_rows[j][k]['space'])
-                        nodes_length[k] = calculated_rows[j][k]['length']
-                        offset += calculated_rows[j][k]['space'] + calculated_rows[j][k]['length']
-
-                set_to_list = []
-                for node in nodes:
-                    set_to_list.append(list(node))
-
-
-
-                permuations = list(itertools.product(*set_to_list))
-                permuations_real = []
-
-                #print 'filtering permutations for = '
-                #print permuations
-
-                for perm in permuations:
-                    invalid = False
-                    for k in range(1, len(perm)):
-                        if perm[k - 1] == perm[k] or (perm[k - 1] - 1) == perm[k] or (perm[k - 1] + 1) == perm[k]:
-                            invalid = True
-
-                    if not invalid:
-                        permuations_real.append(perm)
-                    #else:
-                       # print 'invalid permuation = '
-                        #print perm
-
-
-                # fuckyeah
-                fuckyeah = []
-                #print direction['specs'][i]
-                #print permuations_real
-                for perm in permuations_real:
-                    perm_binary = [False] * (direction['length'])
-                    #print 'Perm = '
-                    for perm_index in range(len(perm)):
-                        for k in range(direction['specs'][i][perm_index]):
-                            perm_binary[perm[perm_index] + k] = True
-
-                    fuckyeah.append(perm_binary)
-
-                real_node = Builder.Node(str(direction['prefix']) + str(i))
-                real_node.domain = copy.deepcopy(fuckyeah)
-
-                real_nodes.append(real_node)
-
-        return real_nodes
-
+        return variables
 
     @staticmethod
     def build_constraints(variables):
         constraints = []
-        # Create all constraints
-        for variable in variables:
-            constraint = Builder.Constraint()
-            constraint.vars = [variable]
-            for var in variables:
-                if variable.index[0:1] != var.index[0:1]:
-                    constraint.vars.append(var)
-            constraint.method = Builder.makefunc(['x'], 'x[0] == x[1]')
-            #print constraint.vars
-            constraints.append(constraint)
 
+        # Loop all variables
+        for i in range(len(variables)):
+                # Create new constraint
+                constraint = Constraint()
+                constraint.method = Builder.makefunc(['n'], 'n[0] == n[1]')
+
+                # Add as constraint
+                constraint.vars = [i]
+
+                # Add the other constraints
+                for j in range(len(variables)):
+                    if j != i and variables[i].index[0:1] != variables[j].index[0:1]:
+                        constraint.vars.append(j)
+
+                # Add to constraints
+                constraints.append(constraint)
+
+        # Return the list of created constraints
         return constraints

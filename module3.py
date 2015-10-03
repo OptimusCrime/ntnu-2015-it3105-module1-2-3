@@ -1,16 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from module2.makefunc import makefunc
-from module2.constraint import Constraint
-from module3.node import Node
-from module3.gui import Gui
-from module3.builder import Builder
-
 from common.astargac import AStarGAC
 from common.printer import Printer
 from common.gac2 import GAC2
+from common.gac import GAC
 from common.gacstate import GACState
+from common.makefunc import makefunc
+
+from module3.gui import Gui
+from module3.builder import Builder
 
 import os
 import glob
@@ -109,40 +108,34 @@ class Module3Runner:
             'length': rows_and_columns[1]
         })
 
-        #print board_data
-
-
-
         # Set references to the Builder class
-        Builder.Node = Node
-        Builder.Constraint = Constraint
         Builder.makefunc = staticmethod(makefunc)
 
-        # Fix permutations for the initial domains and the constraints
-        variables = Builder.build_domains(board_data)
+        # Build the variables
+        variables = Builder.build_variables(board_data)
+
+        # Build the constraints
         constraints = Builder.build_constraints(variables)
 
-        # Gac stuff
+        # Set the constraints
+        GAC.Constraints = constraints
+
+        # Initiate GAC and set the variables
         gac = GAC2()
         gac.variables = variables
-        gac.constraints = constraints
+
+        # Set the correct gac for GACState
+        GACState.GAC = GAC2
 
         gac_state = GACState()
         gac_state.gac = gac
         gac_state.type = GACState.START
 
+        # Set the gac state
         self.astar_gac.gac_state = gac_state
-
-        #for var in self.astar_gac.gac_state.gac.variables:
-        #    print var
-        #    print var.domain
 
         # Begin CSP
         self.astar_gac.start()
-
-        #for var in self.astar_gac.gac_state.gac.variables:
-        #    print var
-        #    print var.domain
 
         # Run the GUI
         self.run()

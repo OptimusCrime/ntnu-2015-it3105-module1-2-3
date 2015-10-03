@@ -6,9 +6,9 @@ from behaviors.best_first import BestFirst
 from behaviors.breadth_first import BreadthFirst
 from behaviors.depth_first import DepthFirst
 
+from Tkinter import *
 import copy
 import math
-from Tkinter import *
 
 
 class Gui(Tk):
