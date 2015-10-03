@@ -28,7 +28,7 @@ class AStarGAC:
         self.gac_state.gac.domain_filtering()
 
         # Assign the current state to AStar and begin to solve
-        self.astar.states.append(self.gac_state)
+        self.astar.states[self.gac_state.get_hash()] = self.gac_state
         self.astar.open.append(self.gac_state)
 
         # Check if we are finished or if the current state is invalid

@@ -113,8 +113,6 @@ class Module1Runner:
                 new_state = State((x, y))
                 self.a_star.states[new_state.get_hash()] = new_state
 
-        print self.a_star.states
-
         # Loop barriers and set type to blocked on all involved nodes
         for bar in barriers:
             for x in range(bar[0], (bar[0] + bar[2])):

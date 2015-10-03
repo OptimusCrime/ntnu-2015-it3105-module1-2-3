@@ -80,3 +80,10 @@ class GACState:
             sum += len(variable.domain) - 1
 
         return sum
+    
+    def get_hash(self):
+        return hash(self.gac)
+
+    @staticmethod
+    def hash(state):
+        return hash(state)
