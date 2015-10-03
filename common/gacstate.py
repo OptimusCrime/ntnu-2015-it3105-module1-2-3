@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from gac import GAC
+
 import copy
 
 
@@ -39,8 +41,11 @@ class GACState:
         if smallest_domain_variable_index is None:
             return []
         for domain in self.gac.variables[smallest_domain_variable_index].domain:
-            # Deep copy self
-            new_gac = copy.deepcopy(self.gac)
+            # New gac state
+            new_gac = GAC()
+
+            # Copy the variable list
+            new_gac.variables = copy.deepcopy(self.gac.variables)
 
             # Force the newly generated state and value to a singleton set
             new_gac.variables[smallest_domain_variable_index].domain = [domain]

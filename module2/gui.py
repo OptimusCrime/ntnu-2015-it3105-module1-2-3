@@ -7,6 +7,7 @@ class Gui(Tk):
 
     NODE_SIZE = 15
     COLORS = ['#ff8080', '#ffcc80', '#99ff80', '#80ffff', '#9980ff', '#ff80cc', '#e5ff80', '#80b3ff', '#e680ff']
+    GAC = None
 
     def __init__(self, *args, **kwargs):
         Tk.__init__(self, *args, **kwargs)
@@ -65,14 +66,14 @@ class Gui(Tk):
         X_SCALE = 1
         Y_SCALE = 1
 
-        if (10 + (X_OFFSET + x_max) * 15) > (self.winfo_screenwidth() - 10):
-            X_SCALE = (self.winfo_screenwidth() - 10) / (10 + (X_OFFSET + x_max) * 15)
-        if (10 + (Y_OFFSET + y_max) * 15) > (self.winfo_screenheight() - 100):
-            Y_SCALE = (self.winfo_screenheight() - 100) / (10 + (Y_OFFSET + y_max) * 15)
+        if (20 + (X_OFFSET + x_max) * 15) > (self.winfo_screenwidth() - 100):
+            X_SCALE = (self.winfo_screenwidth() - 100) / (20 + (X_OFFSET + x_max) * 15)
+        if (20 + (Y_OFFSET + y_max) * 15) > (self.winfo_screenheight() - 100):
+            Y_SCALE = (self.winfo_screenheight() - 100) / (20 + (Y_OFFSET + y_max) * 15)
 
-        left = (10 + (X_OFFSET + node.state[0]) * 15) * X_SCALE
+        left = (20 + (X_OFFSET + node.state[0]) * 15) * X_SCALE
         right = left + Gui.NODE_SIZE
-        top = (10 + (Y_OFFSET + node.state[1]) * 15) * Y_SCALE
+        top = (20 + (Y_OFFSET + node.state[1]) * 15) * Y_SCALE
         bottom = top + Gui.NODE_SIZE
 
         # Return the final calculated posisions
@@ -98,7 +99,7 @@ class Gui(Tk):
             self.elements_color.append(color)
 
         # Draw the constraints / arcs
-        for constraint in self.astar_gac.gac_state.gac.constraints:
+        for constraint in Gui.GAC.Constraints:
             # Get the arc positions
             arc_start_left, arc_start_right, arc_start_top, arc_start_bottom = self.get_node_idx_pos(constraint.vars[0])
             arc_end_left, arc_end_right, arc_end_top, arc_end_bottom = self.get_node_idx_pos(constraint.vars[1])
@@ -151,7 +152,7 @@ class Gui(Tk):
 
         # Check if we should do some more
         if not finished:
-            self.after(50, self.task)
+            self.after(0, self.task)
         else:
             self.element_label_var.set(str(len(self.astar_gac.gac_state.gac.variables)) + ' / ' +
                                        str(len(self.astar_gac.gac_state.gac.variables)) + ' - Finished!')

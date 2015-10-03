@@ -142,7 +142,7 @@ class Module2VCRunner:
                 new_constraint.vars.append(var)
 
             # Apply the new constraint to the list
-            gac.constraints.append(new_constraint)
+            GAC.Constraints.append(new_constraint)
 
         # Create the initial csp state
         gac_state = GACState()
@@ -159,6 +159,9 @@ class Module2VCRunner:
         self.run()
 
     def run(self):
+        # Set reference to GAC
+        Gui.GAC = GAC
+
         # Create new instance of GUI
         gui = Gui()
 

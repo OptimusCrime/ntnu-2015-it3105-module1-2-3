@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
-import inspect
 
 class GAC:
+
+    Constraints = []
 
     def __init__(self):
         self.variables = []
         self.queue = []
-        self.constraints = []
 
     def initialize(self):
-        for constraint in self.constraints:
+        for constraint in GAC.Constraints:
             for var in constraint.vars:
                 self.queue.append((var, constraint))
 
@@ -27,7 +27,7 @@ class GAC:
 
             # Check if domain was reduced
             if old_domain != len(self.variables[x].domain):
-                for constraint in self.constraints:
+                for constraint in GAC.Constraints:
                     if x in constraint.vars and constraint != C:
                         for j in constraint.vars:
                             if x != j:
@@ -35,7 +35,7 @@ class GAC:
 
     def rerun(self, variable):
         # Add to queue
-        for constraint in self.constraints:
+        for constraint in GAC.Constraints:
             if variable in constraint.vars:
                 for j in constraint.vars:
                     if variable != j:
