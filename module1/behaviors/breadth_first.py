@@ -8,10 +8,13 @@ class BreadthFirst(Behavior):
     NAME = 'BreadthFirst'
 
     @staticmethod
-    def handle(node, queue):
-        if node is not None:
-            # Append to list
-            queue.append(node)
+    def add_handler(open_nodes):
+        pass
 
-        # Return the new list
-        return queue
+    @staticmethod
+    def add(node, open_nodes):
+        open_nodes.append(node)
+
+    @staticmethod
+    def get(open_nodes):
+        return open_nodes.pop(0)

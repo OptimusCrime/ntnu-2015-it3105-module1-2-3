@@ -17,13 +17,15 @@ class GACState:
 
         # For integrating with AStar
         self.type = None
-        self.f = 0
+
+        self.h = 0
         self.g = 0
-        self.kids = []
+
+        self.children = []
         self.parents = []
 
     def total_cost(self):
-        return 100
+        return self.h + self.g
 
     def generate_all_successors(self, astar):
         states = []
@@ -64,9 +66,9 @@ class GACState:
                 else:
                     gac_state.type = self.type
 
-                gac_state.f = self.f
+                gac_state.h = gac_state.calculate_h(None)
                 gac_state.g = self.g
-                self.kids = []
+                self.children = []
                 self.parents = []
 
                 # Append the new state
@@ -83,12 +85,24 @@ class GACState:
         sum = 0
         for variable in self.gac.variables:
             sum += len(variable.domain) - 1
-
-        return sum
+        return sum * 10
 
     def get_hash(self):
-        return hash(self.gac)
+        h = ''
+        for var in sorted(self.gac.variables):
+            for d in var.domain:
+                h += str(d) + ','
+        return hash(h)
 
-    @staticmethod
-    def hash(state):
-        return hash(state)
+    def __lt__(self, compare):
+        # Compare cost
+        if self.total_cost() < compare.total_cost():
+            return True
+        elif self.total_cost() > compare.total_cost():
+            return False
+
+        # Compare h
+        if self.h < compare.h:
+            return False
+        else:
+            return True

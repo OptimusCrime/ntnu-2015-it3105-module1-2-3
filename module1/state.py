@@ -91,8 +91,22 @@ class State:
         return 0
 
     def get_hash(self):
-        return str(self.id[0]) + '-' + str(self.id[1])
+        return State.hash(self.id)
 
     @staticmethod
     def hash(key):
+
         return str(key[0]) + '-' + str(key[1])
+
+    def __lt__(self, compare):
+        # Compare cost
+        if self.total_cost() < compare.total_cost():
+            return True
+        elif self.total_cost() > compare.total_cost():
+            return False
+
+        # Compare h
+        if self.h > compare.h:
+            return False
+        else:
+            return True

@@ -52,7 +52,7 @@ class Gui(Tk):
             new_data = copy.deepcopy(source)
 
             # Set the specified behavior
-            new_data.behavior = behavior
+            new_data.set_behavior(behavior)
 
             # Add the data to the list
             self.data.append(new_data)

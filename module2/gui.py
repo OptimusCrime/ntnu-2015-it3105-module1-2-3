@@ -71,9 +71,9 @@ class Gui(Tk):
         if (20 + (Y_OFFSET + y_max) * 15) > (self.winfo_screenheight() - 100):
             Y_SCALE = (self.winfo_screenheight() - 100) / (20 + (Y_OFFSET + y_max) * 15)
 
-        left = (20 + (X_OFFSET + node.state[0]) * 15) * X_SCALE
+        left = 20 + (20 + (X_OFFSET + node.state[0]) * 15) * X_SCALE
         right = left + Gui.NODE_SIZE
-        top = (20 + (Y_OFFSET + node.state[1]) * 15) * Y_SCALE
+        top = 20 + (20 + (Y_OFFSET + node.state[1]) * 15) * Y_SCALE
         bottom = top + Gui.NODE_SIZE
 
         # Return the final calculated posisions
@@ -152,7 +152,7 @@ class Gui(Tk):
 
         # Check if we should do some more
         if not finished:
-            self.after(0, self.task)
+            self.after(10, self.task)
         else:
             self.element_label_var.set(str(len(self.astar_gac.gac_state.gac.variables)) + ' / ' +
                                        str(len(self.astar_gac.gac_state.gac.variables)) + ' - Finished!')

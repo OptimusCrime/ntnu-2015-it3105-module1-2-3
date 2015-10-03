@@ -20,7 +20,7 @@ class AStarGAC:
         self.gac_state = None
 
         # Set behavior
-        self.astar.behavior = BestFirst
+        self.astar.set_behavior(BestFirst)
 
     def start(self):
         # Run CSP-initialize and CSP-domain-filtering-loop
@@ -29,7 +29,7 @@ class AStarGAC:
 
         # Assign the current state to AStar and begin to solve
         self.astar.states[self.gac_state.get_hash()] = self.gac_state
-        self.astar.open.append(self.gac_state)
+        self.astar.behavior.add(self.gac_state, self.astar.open)
 
         # Check if we are finished or if the current state is invalid
         if self.gac_state.gac.check_finished() or self.gac_state.gac.check_contradictory_state():

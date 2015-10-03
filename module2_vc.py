@@ -155,6 +155,11 @@ class Module2VCRunner:
         # Begin CSP
         self.astar_gac.start()
 
+        #while True:
+        #    if self.astar_gac.run():
+        #        break
+        #print 'finished'
+
         # Run the GUI
         self.run()
 

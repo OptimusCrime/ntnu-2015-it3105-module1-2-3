@@ -8,7 +8,13 @@ class DepthFirst(Behavior):
     NAME = 'DepthFirst'
 
     @staticmethod
-    def handle(node, queue):
-        if node is None:
-            return queue
-        return [node] + queue
+    def add_handler(queue):
+        pass
+
+    @staticmethod
+    def add(node, open_nodes):
+        open_nodes.append(node)
+
+    @staticmethod
+    def get(open_nodes):
+        return open_nodes.pop(-1)

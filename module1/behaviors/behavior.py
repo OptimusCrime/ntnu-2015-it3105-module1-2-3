@@ -8,5 +8,16 @@ class Behavior(object):
 
     @staticmethod
     @abstractmethod
-    def handle(node, queue):
+    def add_handler(open_nodes):
         pass
+
+    @staticmethod
+    @abstractmethod
+    def add(node, open_nodes):
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def get(open_nodes):
+        pass
+

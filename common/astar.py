@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import sys
 
 class AStar:
 
@@ -19,12 +20,16 @@ class AStar:
         # Finished
         self.finished = False
 
-    def agenda_loop(self):
-        # Update the open list
-        self.open = self.behavior.handle(None, self.open)
+    def set_behavior(self, behavior):
+        # Set th behavior
+        self.behavior = behavior
 
+        # Add the handler
+        self.behavior.add_handler(self.open)
+
+    def agenda_loop(self):
         # Get the current state
-        current_state = self.open.pop(0)
+        current_state = self.behavior.get(self.open)
 
         # Set node to dirty (used only for GUI drawing)
         current_state.dirty = True
@@ -64,7 +69,7 @@ class AStar:
                             self.attach_and_eval(successor, current_state)
 
                             # Use the behavior to modify the open list
-                            self.open = self.behavior.handle(successor, self.open)
+                            self.behavior.add(successor, self.open)
                         elif current_state.g + successor.arch_cost(current_state) < successor.g:
                             # Attach relationship between states
                             self.attach_and_eval(successor, current_state)
@@ -79,9 +84,11 @@ class AStar:
                     # Attach and eval the new successor
                     self.attach_and_eval(successor, current_state)
 
-                    self.open = self.behavior.handle(successor, self.open)
+                    # Add the successor
+                    self.behavior.add(successor, self.open)
 
-        # We are not done yet
+                current_state.children.append(successor)
+
         return False
 
     @staticmethod
@@ -89,7 +96,7 @@ class AStar:
         # Loop all children belonging to the parent
         for child in parent.children:
             # Check if the new score is better than the old
-            if parent.g + 10 < child.g:
+            if parent.g + child.arch_cost(parent) < child.g:
                 # Append parent to child
                 child.parents.append(parent)
 
