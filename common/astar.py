@@ -6,8 +6,8 @@ class AStar:
     State = None
 
     def __init__(self):
-        # The grid itself
-        self.states = []
+        # All generated states
+        self.states = {}
 
         # Lists with the open and closed states
         self.open = []
@@ -46,7 +46,10 @@ class AStar:
             # Loop all successor nodes and check if they are valid or not
             for successor in successor_states:
                 # Check if this state has already been generated
-                if successor in self.states:
+                if self.states.has_key(successor.get_hash()):
+                    # Swap for successor in the state dictionary
+                    successor = self.states[successor.get_hash()]
+
                     # If state is valid
                     if successor.type is not AStar.State.BLOCKED:
                         # Append the current successor as the child to the parent
@@ -71,7 +74,7 @@ class AStar:
                                 AStar.propagate_path_improvements(successor)
                 else:
                     # Add to states
-                    self.states.append(successor)
+                    self.states[successor.get_hash()] = successor
 
                     # Attach and eval the new successor
                     self.attach_and_eval(successor, current_state)
@@ -107,17 +110,14 @@ class AStar:
         child.h = child.calculate_h(self)
 
     def get_state(self, state_id):
-        for state in self.states:
-            if state.id == state_id:
-                return state
-        return None
+        return self.states[state_id]
 
     def goal_path(self):
         # Find the goal state
         backtrack_state = None
-        for state in self.states:
-            if state.type == AStar.State.GOAL:
-                backtrack_state = state
+        for key, value in self.states.iteritems():
+            if value.type == AStar.State.GOAL:
+                backtrack_state = value
 
         # Backtrack the goal path
         goal_path = []

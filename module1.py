@@ -110,23 +110,26 @@ class Module1Runner:
         # Loop the height
         for y in range(0, height):
             for x in range(0, width):
-                self.a_star.states.append(State((x, y)))
+                new_state = State((x, y))
+                self.a_star.states[new_state.get_hash()] = new_state
+
+        print self.a_star.states
 
         # Loop barriers and set type to blocked on all involved nodes
         for bar in barriers:
             for x in range(bar[0], (bar[0] + bar[2])):
                 for y in range(bar[1], (bar[1] + bar[3])):
-                    self.a_star.get_state((x, y)).type = State.BLOCKED
+                    self.a_star.get_state(State.hash((x, y))).type = State.BLOCKED
 
         # Set the start node
-        start_node = self.a_star.get_state((start[0], start[1]))
+        start_node = self.a_star.get_state(State.hash((start[0], start[1])))
         start_node.type = State.START
 
         # Add start node to the open list
         self.a_star.open.append(start_node)
 
         # Set goal node
-        goal_node = self.a_star.get_state((goal[0], goal[1]))
+        goal_node = self.a_star.get_state(State.hash((goal[0], goal[1])))
         goal_node.type = State.GOAL
 
         # Set information about the start node
