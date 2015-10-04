@@ -66,8 +66,6 @@ class GACState:
                 else:
                     gac_state.type = self.type
 
-                gac_state.h = gac_state.calculate_h(None)
-                gac_state.g = self.g
                 self.children = []
                 self.parents = []
 
