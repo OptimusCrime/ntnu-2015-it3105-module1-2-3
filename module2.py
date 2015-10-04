@@ -198,7 +198,7 @@ class Module2Runner:
         for var in gui.astar_gac.gac_state.gac.variables:
             if len(var.domain) != 1:
                 uncolored += 1
-        
+
         # Print the stats
         Printer.print_content('Unsatisfied constraints: ' + str(0), align='left') # If we get here it is impossible to have unsatisfied constraints
         Printer.print_content('Vertices without color: ' + str(uncolored), align='left')

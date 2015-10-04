@@ -164,4 +164,17 @@ class Module3Runner:
         if platform.system() == 'Darwin':
             os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "iTerm" to true' ''')
 
+        # Pretty print
+        Printer.print_border_top()
+        Printer.print_content('Counts')
+        Printer.print_border_middle()
+
+        # Print the stats
+        Printer.print_content('Search nodes generated (A* generated states): ' + str(len(gui.astar_gac.astar.states)), align='left')
+        Printer.print_content('Search nodes expanded (A* open closed list): ' + str(len(gui.astar_gac.astar.closed)), align='left')
+        Printer.print_content('Solution path length: ' + str(len(gui.astar_gac.astar.goal_path())), align='left')
+
+        # Print closing border
+        Printer.print_border_bottom()
+
 Module3Runner()

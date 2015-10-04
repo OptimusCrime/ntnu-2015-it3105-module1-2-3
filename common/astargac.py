@@ -34,6 +34,8 @@ class AStarGAC:
         # Check if we are finished or if the current state is invalid
         if self.gac_state.gac.check_finished() or self.gac_state.gac.check_contradictory_state():
             if self.gac_state.gac.check_finished():
+                # We found the solution without actually running the agenda loop, make sure we save goal state
+                self.gac_state.type = self.astar.State.GOAL
                 return True
             return False
 
