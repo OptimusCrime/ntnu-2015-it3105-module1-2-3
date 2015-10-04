@@ -86,7 +86,7 @@ class State:
             # Check if the current node is the goal state
             if value.type == State.GOAL:
                 # Return the calculation
-                return math.fabs(self.id[0] - value.id[0]) + math.fabs(self.id[1] - value.id[1]) * 10
+                return (math.fabs(self.id[0] - value.id[0]) + math.fabs(self.id[1] - value.id[1])) * 10
 
         return 0
 
