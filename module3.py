@@ -3,7 +3,7 @@
 
 from common.astargac import AStarGAC
 from common.printer import Printer
-from common.gac2 import GAC2
+from common.nonogac import NonoGAC
 from common.gac import GAC
 from common.gacstate import GACState
 from common.makefunc import makefunc
@@ -121,11 +121,11 @@ class Module3Runner:
         GAC.Constraints = constraints
 
         # Initiate GAC and set the variables
-        gac = GAC2()
+        gac = NonoGAC()
         gac.variables = variables
 
         # Set the correct gac for GACState
-        GACState.GAC = GAC2
+        GACState.GAC = NonoGAC
 
         gac_state = GACState()
         gac_state.gac = gac

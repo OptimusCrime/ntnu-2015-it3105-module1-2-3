@@ -3,7 +3,7 @@
 from gac import GAC
 
 
-class GAC2(GAC):
+class NonoGAC(GAC):
 
     def revise(self, idx, constraint):
         new_domain = []
