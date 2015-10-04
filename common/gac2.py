@@ -6,6 +6,18 @@ from gac import GAC
 class GAC2(GAC):
 
     def revise(self, idx, constraint):
+        # Get current size of everything
+        num = 0
+        for variable in self.variables:
+            for i in range(len(variable.domain)):
+                if i > 0:
+                    num += len(variable.domain[i])
+
+        print 'Current lenth = ' + str(num) 
+
+        if num == 0:
+            return
+
         new_domain = []
 
         # Get the cross index
