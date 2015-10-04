@@ -64,10 +64,7 @@ class GACState:
                 if new_gac.check_finished():
                     gac_state.type = GACState.GOAL
                 else:
-                    gac_state.type = self.type
-
-                self.children = []
-                self.parents = []
+                    gac_state.type = None
 
                 # Append the new state
                 states.append(gac_state)

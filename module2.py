@@ -188,4 +188,25 @@ class Module2Runner:
         if platform.system() == 'Darwin':
             os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "iTerm" to true' ''')
 
+        # Pretty print
+        Printer.print_border_top()
+        Printer.print_content('Counts')
+        Printer.print_border_middle()
+
+        # Get verticies without color
+        uncolored = 0
+        for var in gui.astar_gac.gac_state.gac.variables:
+            if len(var.domain) != 1:
+                uncolored += 1
+        
+        # Print the stats
+        Printer.print_content('Unsatisfied constraints: ' + str(0), align='left') # If we get here it is impossible to have unsatisfied constraints
+        Printer.print_content('Vertices without color: ' + str(uncolored), align='left')
+        Printer.print_content('Nodes in search tree (A* generated states): ' + str(len(gui.astar_gac.astar.states)), align='left')
+        Printer.print_content('Nodes popped and expanded (A* open closed list): ' + str(len(gui.astar_gac.astar.closed)), align='left')
+        Printer.print_content('Solution path length: ' + str(len(gui.astar_gac.astar.goal_path())), align='left')
+
+        # Print closing border
+        Printer.print_border_bottom()
+
 Module2Runner()
