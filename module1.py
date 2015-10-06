@@ -182,7 +182,7 @@ class Module1Runner:
 
                 # Print the stats
                 Printer.print_content('States generated: ' + str(len(data.closed) + len(data.open)), align='left')
-                Printer.print_content('Solution path length: ' + str(sum(map(lambda x: x.g, data.goal_path()))),
+                Printer.print_content('Solution path length: ' + str(len(data.goal_path())),
                                       align='left')
 
             # Print closing border
